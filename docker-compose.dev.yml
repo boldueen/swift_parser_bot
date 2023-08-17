@@ -1,1 +1,90 @@
 version: '3'
+
+services:
+  # architecture services
+  
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis_data:/data/redis
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/mongo
+
+
+
+  # schedulers
+  parsers_scheduler:
+    container_name: parsers_scheduler
+    build: src/schedulers/parsers_scheduler
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+
+
+  # parsers
+  yandex_b2c_parser:
+    container_name: yandex_b2c_parser
+    build: src/parsers/yandex_b2c_parser
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+      - telegram_api_service
+
+  yandex_b2b_parser:
+    container_name: yandex_b2b_parser
+    build: src/parsers/yandex_b2b_parser
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+      - telegram_api_service
+
+  citymobil_parser:
+    container_name: citymobil_parser
+    build: src/parsers/citymobil_parser
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+      - telegram_api_service
+
+
+# client services
+  telegram_api_service:
+    container_name: telegram_api_service
+    build: src/telegram_services/telegram_api
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+
+volumes:
+  mongo_data:
+  redis_data:
+    driver: local
