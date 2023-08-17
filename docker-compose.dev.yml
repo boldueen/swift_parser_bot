@@ -23,13 +23,13 @@ services:
     volumes: 
       - redis_data:/data/redis
 
-  mongodb:
+  mongo:
+    container_name: mongo
     image: mongo:6-jammy
     ports:
       - '27017:27017'
     volumes:
       - mongo_data:/data/mongo
-
 
 
   # schedulers
@@ -83,6 +83,16 @@ services:
       - rabbitmq
       - mongo
       - parsers_scheduler
+
+  telegram_file_sender:
+    container_name: telegram_file_sender
+    build: src/telegram_services/telegram_file_sender
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+
 
 volumes:
   mongo_data:
