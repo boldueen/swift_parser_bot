@@ -1,5 +1,11 @@
 # swift parser bot
+
 bot description...
+
+### [TODO]
+
+- CI/CD
+- containters architecture
 
 ## [DOCS]
 
