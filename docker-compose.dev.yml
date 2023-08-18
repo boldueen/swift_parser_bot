@@ -1,18 +1,19 @@
 version: '3'
-
+ 
 services:
-  # architecture services
-  
+  #  architecture services
+   
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
+    restart: always
     ports:
         - 5672:5672
         - 15672:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-
+ 
   redis:
     image: redis:6.2-alpine
     container_name: redis
@@ -22,7 +23,7 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - redis_data:/data/redis
-
+ 
   mongo:
     container_name: mongo
     image: mongo:6-jammy
@@ -30,9 +31,9 @@ services:
       - '27017:27017'
     volumes:
       - mongo_data:/data/mongo
-
-
-  # schedulers
+ 
+ 
+  #  schedulers
   parsers_scheduler:
     container_name: parsers_scheduler
     build: src/schedulers/parsers_scheduler
@@ -40,9 +41,9 @@ services:
       - redis
       - rabbitmq
       - mongo
-
-
-  # parsers
+ 
+ 
+  #  parsers
   yandex_b2c_parser:
     container_name: yandex_b2c_parser
     build: src/parsers/yandex_b2c_parser
@@ -52,7 +53,7 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
-
+ 
   yandex_b2b_parser:
     container_name: yandex_b2b_parser
     build: src/parsers/yandex_b2b_parser
@@ -62,7 +63,7 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
-
+ 
   citymobil_parser:
     container_name: citymobil_parser
     build: src/parsers/citymobil_parser
@@ -72,18 +73,21 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
-
-
-# client services
+ 
+ 
+#  client services
   telegram_api_service:
     container_name: telegram_api_service
     build: src/telegram_services/telegram_api
+    restart: always
+    environment:
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
     depends_on:
       - redis
       - rabbitmq
       - mongo
       - parsers_scheduler
-
+ 
   telegram_file_sender:
     container_name: telegram_file_sender
     build: src/telegram_services/telegram_file_sender
@@ -92,8 +96,8 @@ services:
       - rabbitmq
       - mongo
       - parsers_scheduler
-
-
+ 
+ 
 volumes:
   mongo_data:
   redis_data:
