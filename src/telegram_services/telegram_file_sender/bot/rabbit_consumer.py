@@ -1,14 +1,13 @@
 import logging
 import json
+
 from pika.exchange_type import ExchangeType
 from pika import ConnectionParameters
 import pika
-import asyncio
+
 from .commands import send_file_to_user_by_id
 from .utils import is_body_correct, get_filepath_by_filetype
 
-
-from asgiref.sync import async_to_sync
 
 logger = logging.getLogger(__name__)
 
