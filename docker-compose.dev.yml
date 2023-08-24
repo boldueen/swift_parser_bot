@@ -22,7 +22,20 @@ services:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
-      - redis_data:/data/redis
+      - redis_data:/data
+
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      REDIS_HOSTS: redis
+      REDIS_HOST: redis
+      REDIS_PORT: redis:6379
+      HTTP_USER: root
+      HTTP_PASSWORD: root
+    ports:
+      - 8081:8081
  
   mongo:
     container_name: mongo
@@ -53,6 +66,8 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
+    volumes:
+      - data-storage:/data
  
   yandex_b2b_parser:
     container_name: yandex_b2b_parser
@@ -63,6 +78,8 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
+    volumes:
+      - data-storage:/data
  
   citymobil_parser:
     container_name: citymobil_parser
@@ -73,6 +90,8 @@ services:
       - mongo
       - parsers_scheduler
       - telegram_api_service
+    volumes:
+      - data-storage:/data
  
  
 #  client services
@@ -91,14 +110,19 @@ services:
   telegram_file_sender:
     container_name: telegram_file_sender
     build: src/telegram_services/telegram_file_sender
+    restart: always
+    environment:
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
     depends_on:
       - redis
       - rabbitmq
       - mongo
       - parsers_scheduler
+    volumes:
+      - data-storage:/data
  
  
 volumes:
   mongo_data:
   redis_data:
-    driver: local
+  data-storage: 
