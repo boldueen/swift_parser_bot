@@ -72,6 +72,7 @@ services:
   yandex_b2b_parser:
     container_name: yandex_b2b_parser
     build: src/parsers/yandex_b2b_parser
+    restart: always
     depends_on:
       - redis
       - rabbitmq
