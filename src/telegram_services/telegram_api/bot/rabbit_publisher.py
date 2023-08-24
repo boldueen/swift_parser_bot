@@ -1,10 +1,21 @@
 import json
+import logging
 
 import pika
-import logging
-from pika import URLParameters
-
+from pika import ConnectionParameters
 from pika.exchange_type import ExchangeType
+
+
+logger = logging.getLogger(__name__)
+
+
+class Consumer():
+    def __init__(self) -> None:
+        connection_string = ConnectionParameters(
+            host='rabbitmq',
+            heartbeat=600,
+            blocked_connection_timeout=300
+        )
 
 
 logger = logging.getLogger(__name__)
@@ -12,11 +23,13 @@ logger = logging.getLogger(__name__)
 
 class Publisher():
     def __init__(self) -> None:
-        connection_string = URLParameters(
-            'amqp://guest:guest@rabbitmq:5672/%2F')
-        print('trying to connect to rabbit...!', flush=True)
+        connection_params = ConnectionParameters(
+            host='rabbitmq',
+            heartbeat=600,
+            blocked_connection_timeout=300
+        )
 
-        self.connection = pika.BlockingConnection(connection_string)
+        self.connection = pika.BlockingConnection(connection_params)
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange="file_sender",
                                       exchange_type=ExchangeType.direct,
