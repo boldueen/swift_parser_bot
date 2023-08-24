@@ -8,4 +8,4 @@ COPY requirements.txt /code/
 
 RUN pip install -r requirements.txt
 
-CMD [ "python", "app/start_polling.py" ]
+CMD [ "python", "./main.py" ]
