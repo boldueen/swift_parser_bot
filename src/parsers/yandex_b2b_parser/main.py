@@ -1,6 +1,6 @@
+from rabbit_consumer import Consumer
 
 
-print('writing a file in volume', flush=True)
-with open('/data/test_file.txt', 'w') as f:
-    f.write('common buddy u must work')
-print('file was written!', flush=True)
+if __name__ == '__main__':
+    consumer = Consumer()
+    consumer.start_consuming()
