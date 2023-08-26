@@ -31,7 +31,7 @@ class Publisher():
 
         self.connection = pika.BlockingConnection(connection_params)
         self.channel = self.connection.channel()
-        self.channel.exchange_declare(exchange="file_sender",
+        self.channel.exchange_declare(exchange="telegram_services",
                                       exchange_type=ExchangeType.direct,
                                       passive=False,
                                       durable=True,
