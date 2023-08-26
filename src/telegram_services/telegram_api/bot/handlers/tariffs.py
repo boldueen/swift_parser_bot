@@ -13,7 +13,7 @@ router: Router = Router()
 
 @router.message(Command('yandex_b2b'))
 async def send_yandex_b2b(message: Message):
-    await message.reply('starting to parse...')
+    await message.reply('wait a second...')
     payload = {
         'filetype': 'yandex_b2b',
         'id_to_send_file_to': message.from_user.id
