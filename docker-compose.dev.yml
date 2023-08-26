@@ -121,6 +121,21 @@ services:
       - parsers_scheduler
     volumes:
       - data-storage:/data
+
+  telegram_log_sender:
+    container_name: telegram_log_sender
+    build: src/telegram_services/telegram_log_sender
+    restart: always
+    environment:
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
+      - TG_ADMIN=${TG_ADMIN}
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+      - parsers_scheduler
+
+ 
  
  
 volumes:
