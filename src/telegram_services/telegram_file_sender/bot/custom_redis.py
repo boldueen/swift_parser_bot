@@ -11,10 +11,19 @@ class CustomRedis(Redis):
         super().__init__(host='redis', decode_responses=True)
         print('connected to redis!!!', flush=True)
 
-        pass
-
     def get_filepath_by_filetype(self, filetype: str) -> str:
+        filepath: str
         if filetype == 'yandex_b2b':
-            return super().get('parsed:rates:yandex_b2b')
-        # TODO: all filetypes
-        return None
+            filepath = super().get('parsed:rates:yandex_b2b')
+
+        if filetype == 'yandex_b2c':
+            filepath = super().get('parsed:rates:yandex_b2c')
+
+        if filetype == 'citymobil':
+            filepath = super().get('parsed:rates:citymobil')
+
+        if filepath == '' or filepath is None:
+            print(f'no available filepath for {filetype}', flush=True)
+            return None
+
+        return filepath
