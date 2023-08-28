@@ -85,12 +85,15 @@ services:
   citymobil_parser:
     container_name: citymobil_parser
     build: src/parsers/citymobil_parser
+    restart: always
     depends_on:
       - redis
       - rabbitmq
       - mongo
       - parsers_scheduler
       - telegram_api_service
+      - telegram_file_sender
+      - telegram_log_sender
     volumes:
       - data-storage:/data
  

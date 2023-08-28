@@ -5,7 +5,12 @@ bot description...
 ### [TODO]
 
 - CI/CD
-- containters architecture
+- containters architecture ✅
+
+- create real parsers for
+- - ya_b2b
+- - ya_b2c
+- - citymobil ✅
 
 ## [DOCS]
 
