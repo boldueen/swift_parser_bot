@@ -5,7 +5,7 @@ import sys
 from aiogram import Bot, Dispatcher
 
 from bot.container import settings
-from bot.handlers import tariffs
+from bot.handlers import tariffs, admin
 
 
 logger = logging.getLogger(__name__)
@@ -26,6 +26,7 @@ async def main():
     dp: Dispatcher = Dispatcher()
 
     dp.include_router(tariffs.router)
+    dp.include_router(admin.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
