@@ -13,7 +13,7 @@ class Publisher():
     def __init__(self) -> None:
         connection_params = ConnectionParameters(
             host='rabbitmq',
-            heartbeat=600,
+            heartbeat=0,
             blocked_connection_timeout=300
         )
 
