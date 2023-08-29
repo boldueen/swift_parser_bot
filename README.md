@@ -5,11 +5,14 @@ bot description...
 ### [TODO]
 
 - CI/CD
+
 - containters architecture ✅
+
+- send keepalives from containers to rabbit
 
 - create real parsers for
 - - ya_b2b
-- - ya_b2c
+- - ya_b2c ⚠️(add old version, refactor is required)
 - - citymobil ✅
 
 ## [DOCS]
