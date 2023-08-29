@@ -38,11 +38,12 @@ class Consumer():
                                    on_message_callback=self.callback)
 
     def callback(self, channel, method, properties, body):
-        print('recieved message')
+        print('recieved message', flush=True)
+        print(body, flush=True)
         try:
             parsed_body: dict = json.loads(body)
             if not is_body_correct(parsed_body):
-                print('body is not corret', flush=True)
+                print('body is not correct', flush=True)
                 return
 
             log_body = get_log_body(body=parsed_body)

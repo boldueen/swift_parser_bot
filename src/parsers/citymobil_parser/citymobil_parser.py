@@ -6,7 +6,7 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from schemas import Tariff
-# from logger import Logger
+from logger import log
 
 
 def fetch_data() -> dict:
@@ -14,8 +14,15 @@ def fetch_data() -> dict:
         'cookie': f'_ym_uid=1680622743785135669; _ym_d=1680622743; _ga=GA1.1.897388559.1680622743; _ym_isad=1; city=%D0%90%D0%B4%D0%BB%D0%B5%D1%80; _ym_visorc=w; _ga_C7TJW524WJ=GS1.1.1680622742.1.1.1680622750.0.0.0; _ga_EKRYN3QXRQ=GS1.1.1680622742.1.1.1680622750.0.0.0',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
     }
-    response = requests.get(
-        'https://city-mobil.ru/tariffs', headers=headers)
+    try:
+        response = requests.get(
+            'https://city-mobil.ru/tariffs', headers=headers)
+    except Exception as e:
+        log.error(f'[citymobil_parser] error while parsing rates. {e.args}')
+
+    if response.status_code != 200:
+        log.error(
+            f'[citymobil_parser] response status from citymobil != 200, response status_code: {response.status_code}')
 
     soup = BeautifulSoup(response.text, 'lxml')
     raw_json_tariffs = soup.find(id='__NEXT_DATA__')
@@ -23,6 +30,9 @@ def fetch_data() -> dict:
 
     cities_objects = tariffs_objects.get(
         'props').get('pageProps').get('tariffs')
+
+    if len(cities_objects) == 0:
+        log.error(f'[citymobil_parser] len of cities object is 0')
 
     return cities_objects
 
@@ -82,10 +92,10 @@ def save_to_excel(tariffs: list[Tariff]):
 
 
 def parse_citymobil_rates():
-    print('starting... .. .', flush=True)
+    log.info('[citymobil rates] starting to parse citymobil rates')
     tariffs_response = fetch_data()
     tariffs = process_response(tariffs_response)
     filename = save_to_excel(tariffs)
-    print(f'SUCCESS! parsed {len(tariffs)} tariffs', flush=True)
+    log.info(f'[citymobil rates] SUCCESS! parsed {len(tariffs)} tariffs')
 
     return filename
